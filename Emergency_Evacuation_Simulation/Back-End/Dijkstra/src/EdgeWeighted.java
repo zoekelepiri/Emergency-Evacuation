@@ -1,5 +1,6 @@
 public class EdgeWeighted implements Comparable<EdgeWeighted> {
 
+    // edge implementation
     NodeWeighted source;
     NodeWeighted destination;
     double weight;
