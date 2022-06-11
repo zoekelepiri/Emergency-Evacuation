@@ -75,7 +75,6 @@ public class GraphVisual {
                             endNodes.add(nodes[temp]);
                         }
                         if((shelter) && !(exit)){
-                            // endNode = nodes[temp];
                             // add nodes with exit
                             endNodes.add(nodes[temp]);
                         }
