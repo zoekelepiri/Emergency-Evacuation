@@ -1,5 +1,7 @@
 import java.util.LinkedList;
 public class NodeWeighted {
+
+    // node implementation
     int n;
     String name;
     boolean exit, shelter;
