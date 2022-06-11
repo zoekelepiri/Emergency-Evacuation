@@ -545,7 +545,6 @@
               people: document.getElementById("node-people").value,
           });
           // to close the window
-          // document.getElementById("popUp").style.display = "none"
           $('#nodeModal').modal('hide');
     }
       function removeNode() {
@@ -554,7 +553,7 @@
         } catch (err) {
           alert(err);
         }
-        //document.getElementById("popUp").style.display = "none"
+       
         $('#nodeModal').modal('hide');
       }
       function addEdge() {
