@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class GraphWeighted {
-    private Set<NodeWeighted> nodes;
+    private Set<NodeWeighted> nodes; // set of nodes
     private boolean directed;
 
     GraphWeighted(boolean directed) {
