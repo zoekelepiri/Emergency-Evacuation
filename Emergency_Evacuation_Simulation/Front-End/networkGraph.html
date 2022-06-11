@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NetWork Graph</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    
+    <style type="text/css">
+      html,
+      body {
+        font: 11pt arial;
+      }
+      #nodes,#edges{
+        position: fixed;
+      }
+      #node-btn{
+        width:100px;
+        text-align: center;
+      }
+      #edge-btn{
+        width:100px;
+        text-align: center;
+        
+      }
+     
+      h1 {
+        font-size: 150%;
+        margin: 5px 0;
+      }
+
+      h2 {
+        font-size: 100%;
+        margin: 5px 0;
+      }
+      table{
+        margin-left: 5px; 
+      }
+      table.view {
+        width: 100%;
+      }
+
+      table td {
+        vertical-align: top;
+        
+      }
+
+      table table {
+        background-color: #f3ebeb;
+        border: 1px solid #f3ebeb;
+      }
+
+      table table td {
+        vertical-align: middle;
+      }
+
+      input[type="text"],
+      pre {
+        border: 1px solid lightgray;
+      }
+
+      pre {
+        margin: 0;
+        padding: 5px;
+        font-size: 10pt;
+      }
+
+      #mynetwork {
+        width: 99%;
+        height: 310px;
+        border: 1px solid lightgray;
+        
+       
+      }
+      #popUp {
+        display: none;
+        position: absolute; 
+        top: 275px;
+        margin-right: 5px;
+        z-index: 299;
+        background-color: #fbf9f9;
+        border: 3px solid #f1f1f1;
+        padding: 10px;
+        text-align: center; 
+         
+      }
+      #edge-popUp {
+        display: none;
+        position: absolute; 
+        top: 305px;
+        margin-right: 5px;
+        z-index: 299;
+        background-color: #f9f9f9e5;
+        border: 3px solid #f1f1f1;
+        padding: 10px;
+        text-align: center; 
+      }
+      #action-btn{
+        width: 90px;
+        margin-left: 15px;
+        margin-right:5px;
+        float: right;   
+      }
+      
+    
+    </style>
+
+    <script
+      type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js">
+    </script>
+    <script 
+        src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+  </head>
+
+  <body onload="draw();">
+    <div class="container-fluid w-100">
+      </br></br>
+      <p style="text-align:center">Welcome!Make your network emergency graph!</p>
+      <div>
+        <button id="action-btn"type="button" class="btn btn-primary" onclick="toJSON();">Export</button>
+        <button id="action-btn"type="button" class="btn btn-primary" onclick="document.getElementById('importJson').click()">Import</button>
+        <input id="importJson" value="import xml" type="file" accept="application/xml" style="display:none" />
+      </div>
+      </br></br></br></br>
+
+      <!--NODE SIMULATION-->
+      <table>
+          <tr>
+            <!--Fix the size-->
+            <form>
+              <div class="form-group col-md-8">
+              <div class="form-row">
+              <div class="col">
+                  <label for="node-id">Node ID</label>
+                  <input type="text" class="form-control" id="node-id">
+                </div>
+                <div class="col">
+                  <label for="edge-id">Edge ID</label>
+                  <input type="text" class="form-control" id="edge-id">
+                </div>
+                <div class="col">
+                  <label for="edge-label">Edge Label</label>
+                  <input type="text" class="form-control" id="edge-label">
+                </div>
+              </div>
+              </div>
+              <div class="form-group col-md-8">
+              <div class="form-row">
+              <div class="col">
+                  <label for="node-label">Node Label</label>
+                  <input type="text" class="form-control"id="node-label">
+                  </br>
+                  <button id="node-btn" type="button" class="btn btn-primary" onclick="addNode();">Add Node</button>
+              </div>
+                <div class="col">
+                  <label for="edge-from">From</label>
+                  <!-- <input type="text" class="form-control"id="edge-from"> -->
+                  <input type="number" min="1" class="form-control"id="edge-from">
+                  </br>
+                  <button id="node-btn" type="button" class="btn btn-primary" onclick="addEdge();">Add Edge</button>
+                </div>
+                <div class="col">
+                  <label for="edge-to">To</label>
+                  <!-- <input type="text" class="form-control" id="edge-to"> -->
+                  <input type="number" min="1" class="form-control"id="edge-to">
+                </div>
+              </div>
+            </div>
+            </form>
+          </tr>
+      </table></div>
+    </br></br>
+
+    <!--VIEW SIMULATION-->
+    
+    <div class="container-fluid w-100"> 
+    <table class="view">
+      <colgroup>
+        <col width="70%"/>
+        <!-- <col width="20%"/> -->
+        <col width="15%" />
+        <col width="15%" /> 
+      </colgroup>
+      <tr>
+        <!--NETWORK SIMULATION-->
+        <td>
+          <h2 style="text-align: center;">Network</h2>
+          <div 
+            id="mynetwork">  
+          </div>
+        </td>
+        <!-- <td> -->
+          <!--NODE PopUp window-->
+          <!-- Modal -->
+          <div class="modal fade" id="nodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Node Message</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <div class="form-row">
+                        <label for="node-exit" class="col-sm-3 col-form-label">Exit</label>
+                         <div class="col-sm-3">
+                          
+                           <select id="node-exit" class="form-control">
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                          </div>
+                        <label for="node-temperature" class="col-sm-3 col-form-label">Temperature</label>
+                          <div class="col-sm-3">
+                            <input type="text" class="form-control" id="node-temperature">
+                          </div> 
+                      </div>
+                    </div>
+                  
+                    <div class="form-group">
+                      <div class="form-row">
+                        <label for="node-smoke" class="col-sm-3 col-form-label">Smoke</label>
+                        <div class="col-sm-3">
+                          <input type="text" class="form-control" id="node-smoke">
+                        </div>
+                        <label for="node-co" class="col-sm-3 col-form-label">CO</label>
+                        <div class="col-sm-3">
+                          <input type="text" class="form-control" id="node-co"> 
+                        </div> 
+                      </div>
+                    </div>
+                  
+                    <div class="form-group">
+                      <div class="form-row">
+                        <label for="node-flood" class="col-sm-3 col-form-label">Flood</label>
+                        <div class="col-sm-3">
+                         
+                          <select id="node-flood" class="form-control">
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                        </div>
+                        <label for="node-co2" class="col-sm-3 col-form-label">CO2</label>
+                        <div class="col-sm-3">
+                          <input type="text" class="form-control" id="node-co2">
+                        </div> 
+                      </div>
+                    </div>
+                  
+                
+                    <div class="form-group">
+                      <div class="form-row">
+                        <label for="node-water" class="col-sm-3 col-form-label">Water</label>
+                        <div class="col-sm-3">
+                        
+                          <select id="node-water" class="form-control">
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                        </div>
+                        <label for="node-fire" class="col-sm-3 col-form-label">Fire</label>
+                        <div class="col-sm-3">
+                          
+                          <select id="node-fire" class="form-control">
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                        </div> 
+                      </div>
+                    </div>
+                  
+         
+                  
+                    <div class="form-group">
+                      <div class="form-row">
+                        <label for="node-first_aid" class="col-sm-3 col-form-label">FirstAid</label>
+                        <div class="col-sm-3">
+                       
+                          <select id="node-first_aid" class="form-control">
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                        </div>
+                        <label for="node-place" class="col-sm-3 col-form-label">Place</label>
+                        <div class="col-sm-3">
+                          <input type="text" class="form-control" id="node-place">
+                        </div> 
+                      </div>
+                    </div>
+                  
+                
+                  
+                    <div class="form-group">
+                      <div class="form-row">
+                        <label for="node-capacity" class="col-sm-3 col-form-label">Capacity</label>
+                        <div class="col-sm-3">
+                          <input type="text" class="form-control" id="node-capacity">
+                        </div>
+                        <label for="node-ventilation" class="col-sm-3 col-form-label">Ventilation</label>
+                        <div class="col-sm-3">
+                    
+                          <select id="node-ventilation" class="form-control">
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                        </div> 
+                      </div>
+                    </div>
+                  
+                
+                    <div class="form-group">
+                      <div class="form-row">
+                        <label for="node-shelter" class="col-sm-3 col-form-label">Shelter</label>
+                        <div class="col-sm-3">
+                          
+                          <select id="node-shelter" class="form-control">
+                            <option selected>true</option>
+                            <option>false</option>
+                          </select>
+                        </div>
+                        <label for="node-people" class="col-sm-3 col-form-label">Crowd</label>
+                        <div class="col-sm-3">
+                          <input type="text" class="form-control" id="node-people">
+                        </div> 
+                      </div>
+                    </div>
+                  </form> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="UpdateNodeData();">Update</button>
+                    <button type="button" class="btn btn-primary" onclick="removeNode();">Remove</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          
+            <!--Edge-->
+            <div class="modal fade" id="edgeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Edge message</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="form-row">
+                              <label for="edge-length" class="col-sm-3 col-form-label">Length</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-length">
+                              </div>
+                              <label for="edge-disability" class="col-sm-3 col-form-label">Disability</label>
+                              <div class="col-sm-3">
+                                <!-- <input type="text" class="form-control" id="edge-disability"> -->
+                                <select id="edge-disability" class="form-control">
+                                  <option selected>true</option>
+                                  <option>false</option>
+                                </select>
+                              </div> 
+                            </div>
+                          </div>
+                         
+                      
+                        
+                          <div class="form-group">
+                            <div class="form-row">
+                              <label for="edge-speed" class="col-sm-3 col-form-label">Speed</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-speed">
+                              </div>
+                              <label for="edge-disability_speed" class="col-sm-3 col-form-label">Speed Disability</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-disability_speed">
+                              </div> 
+                            </div>
+                          </div>
+                         
+                      
+                        
+                          <div class="form-group">
+                            <div class="form-row">
+                              <label for="edge-width" class="col-sm-3 col-form-label">Width</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-width">
+                              </div>
+                              <label for="edge-temperature" class="col-sm-3 col-form-label">Temperature</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-temperature">
+                              </div> 
+                            </div>
+                          </div>
+                         
+                      
+                        
+                          <div class="form-group">
+                            <div class="form-row">
+                              <label for="edge-smoke" class="col-sm-3 col-form-label">Smoke</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-smoke">
+                              </div>
+                              <label for="edge-flood" class="col-sm-3 col-form-label">Flood</label>
+                              <div class="col-sm-3">
+                                <!-- <input type="text" class="form-control" id="edge-flood"> -->
+                                <select id="edge-flood" class="form-control">
+                                  <option selected>true</option>
+                                  <option>false</option>
+                                </select>
+                              </div> 
+                            </div>
+                          </div>
+                         
+                     
+                        
+                          <div class="form-group">
+                            <div class="form-row">
+                              <label for="edge-co" class="col-sm-3 col-form-label">CO</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-co">
+                              </div>
+                              <label for="edge-co2" class="col-sm-3 col-form-label">CO2</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-co2">
+                              </div> 
+                            </div>
+                          </div>
+                          
+                      
+                        
+                          <div class="form-group">
+                            <div class="form-row">
+                              <label for="edge-crowd" class="col-sm-3 col-form-label">Crowd</label>
+                              <div class="col-sm-3">
+                                <input type="text" class="form-control" id="edge-crowd">
+                              </div>
+                            </div>
+                          </div>
+                      
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="UpdateEdgeData();">Update</button>
+                        <button type="button" class="btn btn-primary" onclick="removeEdge();">Remove</button>
+                    </div>
+                  </div>
+                </div>
+              </div>     
+        <!-- </td> -->
+        <!--Hidden fields to store info in the json-->
+        <td style="visibility: hidden;" >
+          <h2>node</h2>
+          <pre id="nodes"></pre>
+        </td>
+        <td style="visibility: hidden;">
+          <h2>edge</h2>
+          <pre id="edges"></pre>
+        </td>
+        
+      </tr>
+    </table>
+  </br>
+</div></div></body>
+
+<script type="text/javascript">
+    var nodes, edges, network;
+    var networkNodes = [];
+    var networkEdges = [];
+    var flag = true;
+    "use strict";
+      function toJSON() {
+        var nodeData = document.getElementById("nodes").innerText = nodes.get();
+        var edgeData = document.getElementById("edges").innerText = edges.get();
+        var jsonObj ={};
+        jsonObj.node = nodeData;
+        jsonObj.edge = edgeData; 
+        var jsonData = {};
+        jsonData.network = jsonObj;
+        var xml = '<?xml version="1.0" encoding="UTF-8"?>' +  OBJtoXML(jsonData);
+        var filename = "file.xml";
+        var pom = document.createElement('a');
+        var bb = new Blob([xml], {type: 'text/plain'});
+        pom.setAttribute('href', window.URL.createObjectURL(bb));
+        pom.setAttribute('download', filename);
+        pom.dataset.downloadurl = ['text/plain', pom.download, pom.href].join(':');
+        pom.draggable = true; 
+        pom.classList.add('dragout');
+        pom.click();
+    }
+      // TEST
+      function OBJtoXML(obj) {
+        var xml = '';
+        for (var prop in obj) {
+            xml += obj[prop] instanceof Array ? '' : "<" + prop + ">";
+            if (obj[prop] instanceof Array) {
+            for (var array in obj[prop]) {
+                xml += "<" + prop + ">";
+                xml += OBJtoXML(new Object(obj[prop][array]));
+                xml += "</" + prop + ">";
+            }
+            } else if (typeof obj[prop] == "object") {
+            xml += OBJtoXML(new Object(obj[prop]));
+            } else {
+            xml += obj[prop];
+            }
+            xml += obj[prop] instanceof Array ? '' : "</" + prop + ">";
+        }
+        var xml = xml.replace(/<\/?[0-9]{1,}>/g, '');
+        return xml;
+    }
+     
+      // pass specific value in fields
+    function addNode(data) {
+        try {
+          nodes.add({
+            id: document.getElementById("node-id").value,
+            label: document.getElementById("node-label").value,
+          });
+        } catch (err) {
+          alert(err);
+        }
+    }
+      // to add extra node data
+    function UpdateNodeData(){
+          // console.log('Id',);
+          nodes.update({
+              id: document.getElementById("node-id").value,
+              exit: document.getElementById("node-exit").value,
+              temperature: document.getElementById("node-temperature").value,
+              smoke: document.getElementById("node-smoke").value,
+              co: document.getElementById("node-co").value,
+              co2: document.getElementById("node-co2").value,
+              flood: document.getElementById("node-flood").value,
+              water: document.getElementById("node-water").value,
+              fire: document.getElementById("node-fire").value,
+              first_aid: document.getElementById("node-first_aid").value,
+              place: document.getElementById("node-place").value,
+              capacity: document.getElementById("node-capacity").value,
+              ventilation: document.getElementById("node-ventilation").value,
+              shelter: document.getElementById("node-shelter").value,
+              people: document.getElementById("node-people").value,
+          });
+          // to close the window
+          // document.getElementById("popUp").style.display = "none"
+          $('#nodeModal').modal('hide');
+    }
+      function removeNode() {
+        try {
+          nodes.remove({ id:document.getElementById("node-id").value });
+        } catch (err) {
+          alert(err);
+        }
+        //document.getElementById("popUp").style.display = "none"
+        $('#nodeModal').modal('hide');
+      }
+      function addEdge() {
+        try {
+          if(document.getElementById("edge-from").value !== document.getElementById("edge-to").value){
+            edges.add({
+            id: document.getElementById("edge-id").value,
+            label:document.getElementById("edge-label").value,
+            from: document.getElementById("edge-from").value,
+            to: document.getElementById("edge-to").value,
+            });
+          }
+          else{
+            alert('Cannot connect node with itself.Please select another value.')
+          }  
+        } catch (err) {
+          alert(err);
+        }
+      }
+      
+      function UpdateEdgeData() {
+        try {
+          edges.update({
+            id: document.getElementById("edge-id").value,
+            from: document.getElementById("edge-from").value,
+            to: document.getElementById("edge-to").value,
+            lengths: document.getElementById("edge-length").value,
+            disability: document.getElementById("edge-disability").value,
+            speed: document.getElementById("edge-speed").value,
+            disability_speed: document.getElementById("edge-disability_speed").value,
+            widths: document.getElementById("edge-width").value,
+            temperature: document.getElementById("edge-temperature").value,
+            smoke: document.getElementById("edge-smoke").value,
+            co: document.getElementById("edge-co").value,
+            co2: document.getElementById("edge-co2").value,
+            flood: document.getElementById("edge-flood").value,
+            crowd: document.getElementById("edge-crowd").value,
+          });
+        } catch (err) {
+          alert(err);
+        }
+        $('#edgeModal').modal('hide');
+
+      }
+      function removeEdge() {
+        try {
+          edges.remove({ id: document.getElementById("edge-id").value });
+        } catch (err) {
+          alert(err);
+        }
+        $('#edgeModal').modal('hide');
+      }
+
+      function draw() {
+       
+        nodes = new vis.DataSet();
+        // create the edges
+        nodes.on("*", function () {
+          document.getElementById("nodes").innerText = JSON.stringify(
+            nodes.get(),
+            null,
+            4
+          );
+        });
+        nodes.add(networkNodes);
+        
+
+        // create an array with edges
+        edges = new vis.DataSet();
+        edges.on("*", function () {
+          document.getElementById("edges").innerText = JSON.stringify(
+            edges.get(),
+            null,
+            4
+          );
+        });
+        edges.add(networkEdges);
+        // create a network
+        var container = document.getElementById("mynetwork");
+        var data = {
+          nodes: nodes,
+          edges: edges,
+        };
+        var options = {
+        interaction:{
+          selectConnectedEdges: false,
+          },
+          nodes:{
+            fixed: false  // dicrease little the move of the nodes
+          },
+          edges:{
+           arrows:{
+             to:{
+               enabled: true // the same for "from" if we want double direction for nodes
+             }
+           } 
+          },
+          physics:{ // nodes do not move any more
+            enabled: false,
+            stabilization: {
+              enabled: false,
+            }
+          }
+        };
+      
+        network = new vis.Network(container, data, options);
+        
+      // the click implementation
+      network.on("click", function (data) {
+        var nodeID = data['nodes']['0'];
+        var edgeID = data['edges']['0']; 
+        data.event = "[original event]";
+        if(data.nodes.length){
+          document.getElementById('node-id').value = nodeID;
+          console.log('The node Id is', document.getElementById('node-id').value);
+          var nodesLength = nodes.get().length;
+          for(var i = 0; i < nodesLength; i++){
+            if(nodeID == nodes.get()[i].id){
+              if(!(nodes.get()[i].exit)){
+                nodes.get()[i].exit = '';
+                nodes.get()[i].temperature = '';
+                nodes.get()[i].smoke = '';
+                nodes.get()[i].co = '';
+                nodes.get()[i].co2 = '';
+                nodes.get()[i].flood = '';
+                nodes.get()[i].water = '';
+                nodes.get()[i].fire = '';
+                nodes.get()[i].first_aid = '';
+                nodes.get()[i].place = '';
+                nodes.get()[i].capacity = '';
+                nodes.get()[i].ventilation = '';
+                nodes.get()[i].shelter = '';
+                nodes.get()[i].people = ''; 
+              }
+              // pass value
+              document.getElementById("node-exit").value = nodes.get()[i].exit;
+              document.getElementById("node-temperature").value = nodes.get()[i].temperature;
+              document.getElementById("node-smoke").value = nodes.get()[i].smoke;
+              document.getElementById("node-co").value = nodes.get()[i].co;
+              document.getElementById("node-co2").value = nodes.get()[i].co2;
+              document.getElementById("node-flood").value =nodes.get()[i].flood;
+              document.getElementById("node-water").value = nodes.get()[i].water; 
+              document.getElementById("node-fire").value = nodes.get()[i].fire;
+              document.getElementById("node-first_aid").value = nodes.get()[i].first_aid;
+              document.getElementById("node-place").value = nodes.get()[i].place;
+              document.getElementById("node-capacity").value = nodes.get()[i].capacity;
+              document.getElementById("node-ventilation").value = nodes.get()[i].ventilation;
+              document.getElementById("node-shelter").value = nodes.get()[i].shelter;
+              document.getElementById("node-people").value = nodes.get()[i].people;
+             break; 
+            }
+          }
+          // replace with modal
+          $('#nodeModal').modal('show');
+        }
+        if(data.edges.length){
+          document.getElementById('edge-id').value = edgeID;
+          document.getElementById('edge-from').value = from;
+          document.getElementById('edge-to').value = to;
+          console.log('The edge Id is', document.getElementById('edge-id').value);
+          var edgesLength = edges.get().length;
+          console.log('LENGTH', edgesLength);
+          for(var i = 0; i < edgesLength; i++){
+            if(edgeID == edges.get()[i].id){
+              var from = edges.get()[i].from;
+              var to = edges.get()[i].to;
+              document.getElementById('edge-from').value = from;
+              document.getElementById('edge-to').value = to;
+              if(!(edges.get()[i].disability)){
+                edges.get()[i].lengths = '';
+                edges.get()[i].disability = '';
+                edges.get()[i].speed = '';
+                edges.get()[i].disability_speed = '';
+                edges.get()[i].widths='';
+                edges.get()[i].temperature = '';
+                edges.get()[i].smoke = '';
+                edges.get()[i].co = '';
+                edges.get()[i].co2 = '';
+                edges.get()[i].flood = '';
+                edges.get()[i].crowd = '';  
+              }
+              // test
+              document.getElementById("edge-length").value = edges.get()[i].lengths;
+              document.getElementById("edge-disability").value = edges.get()[i].disability;
+              document.getElementById("edge-speed").value = edges.get()[i].speed;
+              document.getElementById("edge-disability_speed").value = edges.get()[i].disability_speed;
+              document.getElementById("edge-width").value = edges.get()[i].widths;
+              document.getElementById("edge-temperature").value = edges.get()[i].temperature;
+              document.getElementById("edge-smoke").value = edges.get()[i].smoke;
+              document.getElementById("edge-co").value = edges.get()[i].co;
+              document.getElementById("edge-co2").value = edges.get()[i].co2;
+              document.getElementById("edge-flood").value = edges.get()[i].flood;
+              document.getElementById("edge-crowd").value = edges.get()[i].crowd;
+            break; 
+            }
+          }
+        $('#edgeModal').modal('show');
+        }
+    });
+  }
+  //XML to JSON
+  /**
+* Object assign is required, so ensure that browsers know how to execute this method
+*
+* @method Object.assign
+* @returns {Function}
+*/
+if (typeof Object.assign != 'function') {
+  // Must be writable: true, enumerable: false, configurable: true
+  Object.defineProperty(Object, "assign", {
+    value: function assign(target, varArgs) { // .length of function is 2
+      'use strict';
+      if (target == null) { // TypeError if undefined or null
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var to = Object(target);
+
+      for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+
+        if (nextSource != null) { // Skip over if undefined or null
+          for (var nextKey in nextSource) {
+            // Avoid bugs when hasOwnProperty is shadowed
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+              to[nextKey] = nextSource[nextKey];
+            }
+          }
+        }
+      }
+      return to;
+    },
+    writable: true,
+    configurable: true
+  });
+}
+
+
+/**
+* Object to convert XML into a structured JSON object
+*
+* @method xmlToJson
+* @returns {Object}
+*/
+var xmlToJson = (function () {
+  var self = this;
+
+
+	/**
+	* Adds an object value to a parent object
+	*
+	* @method addToParent
+	* @param {Object} parent
+	* @param {String} nodeName
+	* @param {Mixed} obj
+	* @returns none
+	*/
+  self.addToParent = function (parent, nodeName, obj) {
+    // If this is the first or only instance of the node name, assign it as
+    // an object on the parent.
+    if (!parent[nodeName]) {
+      parent[nodeName] = obj;
+    }
+    // Else the parent knows about other nodes of the same name
+    else {
+      // If the parent has a property with the node name, but it is not an array,
+      // store the contents of that property, convert the property to an array, and
+      // assign what was formerly an object on the parent to the first member of the
+      // array
+      if (!Array.isArray(parent[nodeName])) {
+        var tmp = parent[nodeName];
+        parent[nodeName] = [];
+        parent[nodeName].push(tmp);
+      }
+
+      // Push the current object to the collection
+      parent[nodeName].push(obj);
+    }
+  };
+
+
+
+
+  self.convertXMLStringToDoc = function (str) {
+    var xmlDoc = null;
+
+    if (str && typeof str === 'string') {
+      // Create a DOMParser
+      var parser = new DOMParser();
+
+      // Use it to turn your xmlString into an XMLDocument
+      xmlDoc = parser.parseFromString(str, 'application/xml');
+    }
+
+    return xmlDoc;
+  }
+
+
+	/**
+	* Validates if an data is an XMLDocument
+	*
+	* @method isXML
+	* @param {Mixed} data
+	* @returns {Boolean}
+	*/
+  self.isXML = function (data) {
+    var documentElement = (data ? data.ownerDocument || data : 0).documentElement;
+
+    return documentElement ? documentElement.nodeName.toLowerCase() !== 'html' : false;
+  };
+
+
+	/**
+	* Reads through a node's attributes and assigns the values to a new object
+	*
+	* @method parseAttributes
+	* @param {XMLNode} node
+	* @returns {Object}
+	*/
+  self.parseAttributes = function (node) {
+    var attributes = node.attributes,
+      obj = {};
+
+    // If the node has attributes, assign the new object properties
+    // corresponding to each attribute
+    if (node.hasAttributes()) {
+      for (var i = 0; i < attributes.length; i++) {
+        obj[attributes[i].name] = self.parseValue(attributes[i].value);
+      }
+    }
+
+    // return the new object
+    return obj;
+  };
+
+
+	/**
+	* Rips through child nodes and parses them
+	*
+	* @method parseChildren
+	* @param {Object} parent
+	* @param {XMLNodeMap} childNodes
+	* @returns none
+	*/
+  self.parseChildren = function (parent, childNodes) {
+    // If there are child nodes...
+    if (childNodes.length > 0) {
+      // Loop over all the child nodes
+      for (var i = 0; i < childNodes.length; i++) {
+        // If the child node is a XMLNode, parse the node
+        if (childNodes[i].nodeType == 1) {
+          self.parseNode(parent, childNodes[i]);
+        }
+      }
+    }
+  };
+
+
+	/**
+	* Converts a node into an object with properties
+	*
+	* @method parseNode
+	* @param {Object} parent
+	* @param {XMLNode} node
+	* @returns {Object}
+	*/
+  self.parseNode = function (parent, node) {
+    var nodeName = node.nodeName,
+      obj = Object.assign({}, self.parseAttributes(node)),
+      tmp = null;
+
+    // If there is only one text child node, there is no need to process the children
+    if (node.childNodes.length == 1 && node.childNodes[0].nodeType == 3) {
+      // If the node has attributes, then the object will already have properties.
+      // Add a new property 'text' with the value of the text content
+      if (node.hasAttributes()) {
+        obj['text'] = self.parseValue(node.childNodes[0].nodeValue);
+      }
+      // If there are no attributes, then the parent[nodeName] property value is
+      // simply the interpreted textual content
+      else {
+        obj = self.parseValue(node.childNodes[0].nodeValue);
+      }
+    }
+    // Otherwise, there are child XMLNode elements, so process them
+    else {
+      self.parseChildren(obj, node.childNodes);
+    }
+
+    // Once the object has been processed, add it to the parent
+    self.addToParent(parent, nodeName, obj)
+
+    // Return the parent
+    return parent;
+  };
+
+
+	/**
+	* Interprets a value and converts it to Boolean, Number or String based on content
+	*
+	* @method parseValue
+	* @param {Mixed} val
+	* @returns {Mixed}
+	*/
+  this.parseValue = function (val) {
+    // Create a numeric value from the passed parameter
+    var num = Number(val);
+
+    // If the value is 'true' or 'false', parse it as a Boolean and return it
+    if (val.toLowerCase() === 'true' || val.toLowerCase() === 'false') {
+      return (val.toLowerCase() == 'true');
+    }
+
+    // If the num parsed to a Number, return the numeric value
+    // Else if the valuse passed has no length (an attribute without value) return null,
+    // Else return the param as is
+    return (isNaN(num)) ? val.trim() : (val.length == 0) ? null : num;
+  };
+
+  // Expose the API
+  return {
+    parse: function (xml) {
+      if (xml && typeof xml === 'string') {
+        xml = self.convertXMLStringToDoc(xml);
+      }
+      return (xml && self.isXML(xml)) ? self.parseNode({}, xml.firstChild) : null;
+    }
+  }
+})();
+
+
+  function uploadJson(id, callback) {
+    document.getElementById(id).onchange = function(evt) {
+      try {
+          var files = evt.target.files;
+          flag = false;
+          if (!files.length) {
+              alert('No file selected!');
+              return;
+          }
+          var file = files[0];
+          var reader = new FileReader();
+          const self = this;
+          reader.onload = (event) => {
+              callback(event.target.result);
+          };
+          reader.readAsText(file);
+        }catch (err) {
+          console.error(err);
+        }
+    }
+  }
+
+  uploadJson('importJson', function (xml) {
+    var parser = new DOMParser();
+    var xmlString = parser.parseFromString(xml, "text/xml");
+    var json = xmlToJson.parse(xmlString);
+    console.log('JSON', json);
+    console.log('type', typeof json);
+    // test
+    var jsonString = JSON.stringify(json);
+    var nodesLength = Object.keys(json.network.node).length;
+    var edgesLength = Object.keys(json.network.edge).length;
+    console.log('Len',nodesLength);
+    console.log('Len',edgesLength);
+    for(var i = 0; i < edgesLength; i++){
+        networkEdges.push({
+            id: json.network.edge[i].id.toString(),
+            label: json.network.edge[i].label.toString(),
+            from: json.network.edge[i].from.toString(),
+            to: json.network.edge[i].to.toString(),
+            lengths: json.network.edge[i].lengths.toString(),
+            disability: json.network.edge[i].disability.toString(),
+            speed: json.network.edge[i].speed.toString(),
+            disability_speed: json.network.edge[i].disability_speed.toString(),
+            widths: json.network.edge[i].widths.toString(),
+            temperature: json.network.edge[i].temperature.toString(),
+            smoke: json.network.edge[i].smoke.toString(),
+            co: json.network.edge[i].co.toString(),
+            co2: json.network.edge[i].co2.toString(),
+            flood: json.network.edge[i].flood.toString(),
+            crowd: json.network.edge[i].crowd.toString()
+        });  
+    }
+    for(var i = 0; i < nodesLength; i++){
+        networkNodes.push({
+            id: json.network.node[i].id.toString(),
+            label: json.network.node[i].label.toString(),
+            exit: json.network.node[i].exit.toString(),
+            temperature: json.network.node[i].temperature.toString(),
+            smoke: json.network.node[i].smoke.toString(),
+            co: json.network.node[i].co.toString(),
+            co2: json.network.node[i].co2.toString(),
+            flood: json.network.node[i].flood.toString(),
+            water: json.network.node[i].water.toString(),
+            first_aid: json.network.node[i].first_aid.toString(),
+            place: json.network.node[i].place.toString(),
+            capacity: json.network.node[i].capacity.toString(),
+            ventilation: json.network.node[i].ventilation.toString(),
+            shelter: json.network.node[i].shelter.toString(),
+            people: json.network.node[i].people.toString()
+        });  
+    }
+    console.log('Nodes',networkNodes);
+    // console.log('Nodes',typeof networkNodes);
+    console.log('Edges',networkEdges);
+    // console.log('Edges',typeof networkEdges);
+   draw();
+
+  }); 
+
+</script>
