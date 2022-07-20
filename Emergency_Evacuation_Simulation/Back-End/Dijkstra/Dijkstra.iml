@@ -20,7 +20,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$USER_HOME$/Downloads/jung" />
+          <root url="file://$USER_HOME$/Downloads/jung"/>
         </CLASSES>
         <JAVADOC />
         <SOURCES />
