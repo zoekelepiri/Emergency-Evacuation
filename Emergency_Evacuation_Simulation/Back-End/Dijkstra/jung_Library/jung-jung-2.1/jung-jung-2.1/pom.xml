@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.jung</groupId>
+  <artifactId>jung-parent</artifactId>
+  <version>2.1</version>
+  <packaging>pom</packaging>
+  <name>JUNG (parent metadata project)</name>
+  <url>http://jrtom.github.io/jung/</url>
+  <licenses>
+    <license>
+      <name>The BSD License</name>
+      <url>https://github.com/jrtom/jung/blob/master/LICENSE</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/jrtom/jung</url>
+    <connection>scm:git:git://github.com/jrtom/jung.git</connection>
+    <developerConnection>scm:git:git://github.com/jrtom/jung.git</developerConnection>
+  </scm>
+  <description>
+    JUNG the Java Universal Network/Graph Framework--is a software
+    library that provides a common and extendible language for the
+    modeling, analysis, and visualization of data that can be
+    represented as a graph or network. It is written in Java, which
+    allows JUNG-based applications to make use of the extensive
+    built-in capabilities of the Java API, as well as those of other
+    existing third-party Java libraries. The JUNG architecture is
+    designed to support a variety of representations of entities and
+    their relations, such as directed and undirected graphs,
+    multi-modal graphs, graphs with parallel edges, and hypergraphs.
+    It provides a mechanism for annotating graphs, entities, and
+    relations with metadata. This facilitates the creation of
+    analytic tools for complex data sets that can examine the
+    relations between entities as well as the metadata attached to
+    each entity and relation. The current distribution of JUNG
+    includes implementations of a number of algorithms from graph
+    theory, data mining, and social network analysis, such as
+    routines for clustering, decomposition, optimization, random
+    graph generation, statistical analysis, and calculation of
+    network distances, flows, and importance measures (centrality,
+    PageRank, HITS, etc.). JUNG also provides a visualization
+    framework that makes it easy to construct tools for the
+    interactive exploration of network data. Users can use one of
+    the layout algorithms provided, or use the framework to create
+    their own custom layouts. In addition, filtering mechanisms are
+    provided which allow users to focus their attention, or their
+    algorithms, on specific portions of the graph.
+  </description>
+  <modules>
+    <module>jung-api</module>
+    <module>jung-graph-impl</module>
+    <module>jung-algorithms</module>
+    <module>jung-io</module>
+    <module>jung-visualization</module>
+    <module>jung-samples</module>
+  </modules>
+  <prerequisites>
+    <maven>3.1.1</maven>
+  </prerequisites>
+  <properties>
+    <!-- TODO(cgruber): Audit and update dependencies, particularly google deps. -->
+    <junit.version>3.8.1</junit.version>
+    <guava.version>19.0</guava.version>
+  </properties>
+  <developers>
+    <developer>
+      <id>eflat</id>
+      <name>Joshua</name>
+      <email>joshua.omadadhain+maven@gmail.com</email>
+      <url>https://sites.google.com/site/joshuaomadadhain</url>
+      <organization>Google</organization>
+      <organizationUrl>http://www.google.com</organizationUrl>
+      <timezone>-8</timezone>
+      <roles>
+        <role>Owner</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>offkey</id>
+      <name>Danyel</name>
+      <email>offkey@sf.net</email>
+      <organization>Microsoft Research</organization>
+      <organizationUrl>http://research.microsoft.com</organizationUrl>
+      <timezone>-8</timezone>
+      <roles>
+        <role>Owner</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tomnelson</id>
+      <name>Tom</name>
+      <email>tomnelson@sf.net</email>
+      <organization>ICCI</organization>
+      <organizationUrl>http://www.intergratedcc.com</organizationUrl>
+      <timezone>-5</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.5.1</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addClasspath>true</addClasspath>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+          <configuration>
+            <mavenExecutorId>forked-path</mavenExecutorId>
+            <useReleaseProfile>false</useReleaseProfile>
+            <arguments>${arguments} -Psonatype-oss-release</arguments>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <!-- generates aggregated javadoc for root project -->
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <aggregate>true</aggregate>
+          <links>
+            <link>http://docs.oracle.com/javaee/6/api/</link>
+            <link>http://docs.oracle.com/javase/6/docs/api/</link>
+          </links>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.19.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.6</version>
+        <configuration>
+          <targetJdk>1.5</targetJdk>
+          <linkXref>true</linkXref>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.3</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
